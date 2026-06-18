@@ -21,10 +21,11 @@ The script must support a configuration parameter (e.g., via an environment vari
 
 #### 2. Handshake, Polling, and Async Flow
 
+* Authenticate with OAuth 2.0 client credentials before starting the export. The client accepts a FHIR API base URL, client ID, and client secret, requests an access token from the token endpoint, and uses that token for FHIR API requests.
 * The initial `POST` request must include the HTTP header `Prefer: respond-async`.
-* Capture the `Content-Location` URL from the `202 Accepted` response headers.
+* Capture the `Content-Location` URL from the `202 Accepted` response headers and poll it as part of a single export operation.
 * Implement a synchronous `while` loop to poll the status URL.
-* Inspect the `Retry-After` header during polling responses and make the script sleep for that duration before making the next request to prevent rate-limiting.
+* Inspect the `Retry-After` header during polling responses and make the script sleep for that duration before making the next request to prevent rate-limiting. If the server omits `Retry-After`, use a conservative default polling delay.
 * Handle empty exports gracefully: If the status endpoint returns `204 No Content` or a `200 OK` with an empty `"output"` manifest array, log `"No new data found"`, commit no changes, and exit cleanly with code `0`.
 
 #### 3. Streaming Ingestion to BigQuery
