@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Pulls all data from a FHIR API using $export, and loads it into a bigquery database"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "google-cloud-bigquery>=3.42.0",
+]
 
 [project.scripts]
 fhir-to-bigquery = "fhir_to_bigquery.main:main"
